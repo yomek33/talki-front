@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  User as FirebaseUser,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -12,17 +17,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 
-const signInWithGoogle = async (): Promise<string | null> => {
+const signInWithGoogle = async (): Promise<FirebaseUser | null> => {
+  const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
-    const token = await result.user.getIdToken();
-    return token;
+    return result.user;
   } catch (error) {
-    console.error("Error signing in with Google", error);
+    console.error("Google sign-in failed", error);
     return null;
   }
 };
 
-export { auth, signInWithGoogle };
+export default { auth, signInWithGoogle };

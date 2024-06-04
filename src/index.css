@@ -1,3 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.google-button {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4285f4;
+  font-size: 16px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  outline: none;
+}
+
+.google-button:hover {
+  background-color: #f1f1f1;
+}
+
+.google-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0 15px;
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.google-button-text {
+  flex-grow: 1;
+  text-align: center;
+}
