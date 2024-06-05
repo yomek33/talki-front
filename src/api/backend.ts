@@ -3,22 +3,28 @@ import { User } from "../types";
 const backendUri = import.meta.env.VITE_BACKEND_URI;
 
 export const sendUserDataToBackend = async (user: User) => {
-  try {
-    const response = await fetch(`${backendUri}/api/auth`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
+      try {
+        const response = await fetch(`${backendUri}/api/auth`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id_token: user.idToken,
+            uid: user.uid,
+            display_name: user.displayName,
+          }),
+        });
 
-    if (!response.ok) {
-      throw new Error("Failed to send user data to backend");
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error sending user data to backend:", error);
-    throw error;
-  }
+        if (!response.ok) {
+          throw new Error("Failed to send user data to backend");
+        }
+        const data = await response.json();
+        console.log("Data from backend:", data);
+        return data;
+      } catch (error) {
+        console.error("Error sending user data to backend:", error);
+        throw error;
+      }
 };

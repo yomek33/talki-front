@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { AuthContext } from "../api/AuthProvider";
 import { sendUserDataToBackend } from "../api/backend";
 import { User } from "../types";
 import GoogleSignInButton from "./GoogleSigninButton";
 const SignIn: React.FC = () => {
   const authContext = useContext(AuthContext);
-
+  const [isBackendConfirmed, setIsBackendConfirmed] = useState(false);
   if (!authContext) {
     return <div>Loading...</div>;
   }
@@ -15,14 +15,22 @@ const SignIn: React.FC = () => {
   const handleSignIn = async () => {
     try {
       const userCredential = await signInWithGoogle();
+      console.log("User Credential:", userCredential);
       if (userCredential) {
+        const idToken = await userCredential.getIdTokenResult(true);
         const userData: User = {
+          idToken: idToken.token,
           uid: userCredential.uid,
           displayName: userCredential.displayName,
           email: userCredential.email,
           photoURL: userCredential.photoURL,
         };
-        await sendUserDataToBackend(userData);
+        const response = await sendUserDataToBackend(userData);
+        if (response.jwt_token) {
+          setIsBackendConfirmed(true);
+        } else {
+          throw new Error("Backend verification failed");
+        }
       }
     } catch (error) {
       console.error("Sign-in failed:", error);
@@ -36,11 +44,12 @@ const SignIn: React.FC = () => {
       console.error("Sign-out failed:", error);
     }
   };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       {loading ? (
         <div className="text-lg">Loading...</div>
-      ) : user ? (
+      ) : user && isBackendConfirmed ? (
         <div className="text-center">
           <p className="text-xl mb-4">Welcome, {user.displayName}!</p>
           <button
@@ -59,5 +68,4 @@ const SignIn: React.FC = () => {
     </div>
   );
 };
-
 export default SignIn;
