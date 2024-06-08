@@ -3,6 +3,7 @@ import { AuthContext } from "../api/AuthProvider";
 import { sendUserDataToBackend } from "../api/backend";
 import { User } from "../types";
 import GoogleSignInButton from "./GoogleSigninButton";
+
 const SignIn: React.FC = () => {
   const authContext = useContext(AuthContext);
   const [isBackendConfirmed, setIsBackendConfirmed] = useState(false);
@@ -26,7 +27,7 @@ const SignIn: React.FC = () => {
           photoURL: userCredential.photoURL,
         };
         const response = await sendUserDataToBackend(userData);
-        if (response.jwt_token) {
+        if (response) {
           setIsBackendConfirmed(true);
         } else {
           throw new Error("Backend verification failed");
