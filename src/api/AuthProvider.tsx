@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState, ReactNode } from "react";
+import React, { createContext, useContext, useEffect, ReactNode } from "react";
 import {
   onAuthStateChanged,
   signOut,
@@ -6,6 +6,8 @@ import {
 } from "firebase/auth";
 import PropTypes from "prop-types";
 import FirebaseConfig from "./FirebaseConfig";
+import { useAtom } from "jotai";
+import { userAtom, loadingAtom } from "../globalState/user";
 
 const { auth, signInWithGoogle } = FirebaseConfig;
 
@@ -18,29 +20,48 @@ interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
+export const useAuthContext = () => {
+  const authContext = useContext(AuthContext);
+  return authContext;
+};
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useAtom(userAtom);
+  const [loading, setLoading] = useAtom(loadingAtom);
 
-  const logOut = () => {
+  const logOut = async () => {
     setLoading(true);
-    return signOut(auth).finally(() => setLoading(false));
+    try {
+      await signOut(auth);
+      setUser(null);
+      console.log("User successfully signed out");
+    } catch (error) {
+      console.error("Error during sign out:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (currentUser) => {
+        setUser(currentUser);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error during auth state change:", error);
+        setLoading(false);
+      }
+    );
 
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [setUser, setLoading]);
 
   const authValue: AuthContextProps = {
     user,
