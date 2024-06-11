@@ -8,13 +8,17 @@ import React, {
 import {
   onAuthStateChanged,
   signOut,
-  User as FirebaseUser,
   getIdToken,
+  User as FirebaseUser,
 } from "firebase/auth";
 import PropTypes from "prop-types";
 import FirebaseConfig from "./FirebaseConfig";
 import { useAtom } from "jotai";
-import { userAtom, loadingAtom } from "../globalState/user";
+import {
+  userAtom,
+  loadingAtom,
+  verifyUserByBackendAtom,
+} from "../globalState/user";
 
 const { auth, signInWithGoogle } = FirebaseConfig;
 
@@ -40,6 +44,9 @@ interface AuthProviderProps {
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useAtom(userAtom);
   const [loading, setLoading] = useAtom(loadingAtom);
+  const [verifyUserByBackend, setVerifyUserByBackend] = useAtom(
+    verifyUserByBackendAtom
+  );
   const [idToken, setIdToken] = useState<string | null>(null);
 
   const logOut = async () => {
@@ -48,6 +55,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await signOut(auth);
       setUser(null);
       setIdToken(null);
+      setVerifyUserByBackend(false);
       console.log("User successfully signed out");
     } catch (error) {
       console.error("Error during sign out:", error);

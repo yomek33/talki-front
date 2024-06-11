@@ -1,6 +1,9 @@
-import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import { User as FirebaseUser } from "firebase/auth";
 
-export const userAtom = atom<FirebaseUser | null>(null);
-export const loadingAtom = atom<boolean>(true);
-export const verifyUserByBackendAtom = atom<boolean>(false);
+export const userAtom = atomWithStorage<FirebaseUser | null>("userAtom", null);
+export const loadingAtom = atomWithStorage<boolean>("loadingAtom", true);
+export const verifyUserByBackendAtom = atomWithStorage<boolean>(
+  "verifyUserByBackendAtom",
+  false
+);

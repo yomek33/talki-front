@@ -14,7 +14,7 @@ const SignIn: React.FC = () => {
   const authContext = useContext(AuthContext);
   const [user, setUser] = useAtom(userAtom);
   const [loading, setLoading] = useAtom(loadingAtom);
-  const [isVerifyUserByBackend, setisVerifyUserByBackend] = useAtom(
+  const [isVerifyUserByBackend, setIsVerifyUserByBackend] = useAtom(
     verifyUserByBackendAtom
   );
 
@@ -40,7 +40,7 @@ const SignIn: React.FC = () => {
         };
         const response = await sendUserDataToBackend(userData);
         if (response) {
-          setisVerifyUserByBackend(true);
+          setIsVerifyUserByBackend(true);
           setUser(userCredential);
         } else {
           throw new Error("Backend verification failed");
