@@ -41,6 +41,7 @@ const SignIn: React.FC = () => {
         }
       }
     } catch (error) {
+      setUser(null);
       console.error("Sign-in failed:", error);
     } finally {
       setLoading(false);

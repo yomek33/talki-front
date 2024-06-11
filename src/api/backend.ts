@@ -18,9 +18,9 @@ export const sendUserDataToBackend = async (user: User) => {
     });
 
     if (!response.ok) {
+      console.error("Failed to send user data to backend:", response);
       throw new Error("Failed to send user data to backend");
     }
-
     return true;
   } catch (error) {
     console.error("Error sending user data to backend:", error);

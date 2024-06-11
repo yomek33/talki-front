@@ -1,8 +1,15 @@
-import React, { createContext, useContext, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  ReactNode,
+  useState,
+} from "react";
 import {
   onAuthStateChanged,
   signOut,
   User as FirebaseUser,
+  getIdToken,
 } from "firebase/auth";
 import PropTypes from "prop-types";
 import FirebaseConfig from "./FirebaseConfig";
@@ -13,6 +20,7 @@ const { auth, signInWithGoogle } = FirebaseConfig;
 
 interface AuthContextProps {
   user: FirebaseUser | null;
+  idToken: string | null;
   logOut: () => Promise<void>;
   loading: boolean;
   signInWithGoogle: () => Promise<FirebaseUser | null>;
@@ -24,6 +32,7 @@ export const useAuthContext = () => {
   const authContext = useContext(AuthContext);
   return authContext;
 };
+
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -31,12 +40,14 @@ interface AuthProviderProps {
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useAtom(userAtom);
   const [loading, setLoading] = useAtom(loadingAtom);
+  const [idToken, setIdToken] = useState<string | null>(null);
 
   const logOut = async () => {
     setLoading(true);
     try {
       await signOut(auth);
       setUser(null);
+      setIdToken(null);
       console.log("User successfully signed out");
     } catch (error) {
       console.error("Error during sign out:", error);
@@ -48,8 +59,12 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(
       auth,
-      (currentUser) => {
+      async (currentUser) => {
         setUser(currentUser);
+        if (currentUser) {
+          const token = await getIdToken(currentUser);
+          setIdToken(token);
+        }
         setLoading(false);
       },
       (error) => {
@@ -65,6 +80,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const authValue: AuthContextProps = {
     user,
+    idToken,
     logOut,
     loading,
     signInWithGoogle,

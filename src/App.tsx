@@ -5,7 +5,6 @@ import SignIn from "./components/Signin";
 import MainPage from "./MainPage";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
-import LogOut from "./components/LogOut";
 
 function App() {
   return (
