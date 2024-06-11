@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { AuthContext } from "../api/AuthProvider";
 
@@ -21,8 +21,9 @@ const SubmitArticleForm: React.FC = () => {
     reset,
     formState: { errors },
   } = useForm<ArticleFormInputs>();
-  const [error, setError] = React.useState<string>("");
-  const [success, setSuccess] = React.useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
+  const [responseText, setResponseText] = useState<string[]>([]);
 
   const onSubmit: SubmitHandler<ArticleFormInputs> = async (data) => {
     setError("");
@@ -48,7 +49,13 @@ const SubmitArticleForm: React.FC = () => {
         throw new Error("Failed to submit article");
       }
 
+      const responseData = await response.json();
       setSuccess("Article submitted successfully!");
+
+      // Extract the Text property from each object in the response array
+      const texts = responseData.map((item: { Text: string }) => item.Text);
+      setResponseText(texts);
+
       reset();
     } catch (error) {
       console.error("Error submitting article:", error);
@@ -73,7 +80,7 @@ const SubmitArticleForm: React.FC = () => {
         </div>
         <div>
           <label>
-            Content:
+            Text:
             <textarea
               {...register("content", { required: "Content is required" })}
             />
@@ -84,6 +91,16 @@ const SubmitArticleForm: React.FC = () => {
         </div>
         <button type="submit">Submit</button>
       </form>
+      {responseText.length > 0 && (
+        <div>
+          <h3>Processed Content</h3>
+          <ul>
+            {responseText.map((item: string, index: number) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
