@@ -44,12 +44,14 @@ const SubmitArticleForm: React.FC = () => {
       });
 
       if (!response.ok) {
+        console.error("Failed to submit article:", response);
         throw new Error("Failed to submit article");
       }
 
       setSuccess("Article submitted successfully!");
       reset();
     } catch (error) {
+      console.error("Error submitting article:", error);
       setError("Error submitting article: " + (error as Error).message);
     }
   };

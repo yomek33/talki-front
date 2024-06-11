@@ -1,7 +1,7 @@
 import React, { FC, ComponentType } from "react";
 import { Navigate, PathRouteProps } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../api/AuthProvider";
+import { useAtom } from "jotai";
+import { userAtom, verifyUserByBackendAtom } from "../globalState/user";
 
 interface PublicRouteProps extends PathRouteProps {
   component: ComponentType;
@@ -12,9 +12,10 @@ const PublicRoute: FC<PublicRouteProps> = ({
   component: Component,
   authenticatedRoute = "/",
 }) => {
-  const authContext = useContext(AuthContext);
+  const [user] = useAtom(userAtom);
+  const [isVerifyUserByBackend] = useAtom(verifyUserByBackendAtom);
 
-  return authContext?.user ? (
+  return user && isVerifyUserByBackend ? (
     <Navigate replace to={authenticatedRoute} />
   ) : (
     <>

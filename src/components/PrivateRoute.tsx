@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../api/AuthProvider";
 import LogOut from "./LogOut";
 import { useAtom } from "jotai";
-import { userAtom } from "../globalState/user";
+import { userAtom, verifyUserByBackendAtom } from "../globalState/user";
 
 interface PrivateRouteProps {
   component: ComponentType;
@@ -16,14 +16,15 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
   const authContext = useContext(AuthContext);
   const location = useLocation();
   const [user] = useAtom(userAtom);
+  const [isVerifyUserByBackend] = useAtom(verifyUserByBackendAtom);
 
   if (!authContext) {
     return <div>Loading...</div>;
   }
 
-  console.log("PrivateRoute authContext:", authContext);
-  console.log("PrivateRoute user:", user);
-  return user ? (
+  console.log("User:", user);
+
+  return user && isVerifyUserByBackend ? (
     <>
       <h1>Private Route</h1>
       <LogOut />

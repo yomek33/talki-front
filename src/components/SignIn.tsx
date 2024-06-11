@@ -1,16 +1,22 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { useAtom } from "jotai";
 import { AuthContext } from "../api/AuthProvider";
 import { sendUserDataToBackend } from "../api/backend";
 import { User } from "../types";
 import GoogleSignInButton from "./GoogleSigninButton";
-import { userAtom, loadingAtom } from "../globalState/user";
+import {
+  userAtom,
+  loadingAtom,
+  verifyUserByBackendAtom,
+} from "../globalState/user";
 
 const SignIn: React.FC = () => {
   const authContext = useContext(AuthContext);
   const [user, setUser] = useAtom(userAtom);
   const [loading, setLoading] = useAtom(loadingAtom);
-  const [isBackendConfirmed, setIsBackendConfirmed] = useState(false);
+  const [isVerifyUserByBackend, setisVerifyUserByBackend] = useAtom(
+    verifyUserByBackendAtom
+  );
 
   if (!authContext) {
     return <div>Loading...</div>;
@@ -34,7 +40,7 @@ const SignIn: React.FC = () => {
         };
         const response = await sendUserDataToBackend(userData);
         if (response) {
-          setIsBackendConfirmed(true);
+          setisVerifyUserByBackend(true);
           setUser(userCredential);
         } else {
           throw new Error("Backend verification failed");
@@ -64,7 +70,7 @@ const SignIn: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen">
       {loading ? (
         <div className="text-lg">Loading...</div>
-      ) : user && isBackendConfirmed ? (
+      ) : user && isVerifyUserByBackend ? (
         <div className="text-center">
           <p className="text-xl mb-4">Welcome, {user.displayName}!</p>
           <button
