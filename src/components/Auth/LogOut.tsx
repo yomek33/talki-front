@@ -1,7 +1,7 @@
 import React, { FC, useContext } from "react";
-import { AuthContext } from "../api/AuthProvider";
+import { AuthContext } from "../../services/AuthProvider";
 import { useAtom } from "jotai";
-import { userAtom, loadingAtom } from "../globalState/user";
+import { userAtom, loadingAtom } from "../../globalState/user";
 import { useNavigate } from "react-router-dom";
 
 const LogOut: FC = () => {

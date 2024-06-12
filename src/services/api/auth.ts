@@ -1,4 +1,4 @@
-import { User } from "../types";
+import { User } from "../../types";
 
 const backendUri = import.meta.env.VITE_BACKEND_URI;
 
@@ -17,6 +17,7 @@ export const sendUserDataToBackend = async (user: User) => {
       }),
     });
 
+    console.log("id_token:", user.idToken);
     if (!response.ok) {
       console.error("Failed to send user data to backend:", response);
       throw new Error("Failed to send user data to backend");

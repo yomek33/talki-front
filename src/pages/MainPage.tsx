@@ -1,5 +1,5 @@
 import React from "react";
-import SubmitArticleForm from "./components/SubmitArticleForm";
+import SubmitArticleForm from "../components/Article/SubmitArticleForm";
 
 const MainPage: React.FC = () => {
   return (

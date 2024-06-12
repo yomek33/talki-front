@@ -5,3 +5,9 @@ export interface User {
   email: string | null;
   photoURL: string | null;
 }
+
+export interface Article {
+  id: string;
+  title: string;
+  content: string;
+}

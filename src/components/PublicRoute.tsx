@@ -5,18 +5,18 @@ import { userAtom, verifyUserByBackendAtom } from "../globalState/user";
 
 interface PublicRouteProps extends PathRouteProps {
   component: ComponentType;
-  authenticatedRoute?: string;
+  path?: string;
 }
 
 const PublicRoute: FC<PublicRouteProps> = ({
   component: Component,
-  authenticatedRoute = "/",
+  path = "/",
 }) => {
   const [user] = useAtom(userAtom);
   const [isVerifyUserByBackend] = useAtom(verifyUserByBackendAtom);
 
   return user && isVerifyUserByBackend ? (
-    <Navigate replace to={authenticatedRoute} />
+    <Navigate replace to={path} />
   ) : (
     <>
       <h1>Public Route</h1>

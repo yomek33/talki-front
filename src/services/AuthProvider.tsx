@@ -12,13 +12,13 @@ import {
   User as FirebaseUser,
 } from "firebase/auth";
 import PropTypes from "prop-types";
-import FirebaseConfig from "./FirebaseConfig";
+import FirebaseConfig from "./api/FirebaseConfig";
 import { useAtom } from "jotai";
 import {
   userAtom,
   loadingAtom,
   verifyUserByBackendAtom,
-} from "../globalState/user";
+} from "../../src/globalState/user";
 
 const { auth, signInWithGoogle } = FirebaseConfig;
 

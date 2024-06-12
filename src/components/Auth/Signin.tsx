@@ -1,14 +1,14 @@
 import React, { useContext } from "react";
 import { useAtom } from "jotai";
-import { AuthContext } from "../api/AuthProvider";
-import { sendUserDataToBackend } from "../api/backend";
-import { User } from "../types";
+import { AuthContext } from "../../services/AuthProvider";
+import { sendUserDataToBackend } from "../../services/api/auth";
+import { User } from "../../types";
 import GoogleSignInButton from "./GoogleSigninButton";
 import {
   userAtom,
   loadingAtom,
   verifyUserByBackendAtom,
-} from "../globalState/user";
+} from "../../globalState/user";
 
 const SignIn: React.FC = () => {
   const authContext = useContext(AuthContext);

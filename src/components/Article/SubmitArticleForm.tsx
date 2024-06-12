@@ -1,12 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { AuthContext } from "../api/AuthProvider";
-
-export interface Article {
-  id: string;
-  title: string;
-  content: string;
-}
+import { AuthContext } from "../../services/AuthProvider";
 
 interface ArticleFormInputs {
   title: string;
