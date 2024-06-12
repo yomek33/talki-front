@@ -1,6 +1,6 @@
 // api.ts
 import { BACKEND_URI } from "../../config/config";
-import { Article } from "../../types";
+import { Article, Phrase } from "../../types";
 
 export const fetchArticles = async (): Promise<Article[]> => {
   const response = await fetch(`${BACKEND_URI}/api/articles`, {
@@ -25,7 +25,7 @@ export const fetchArticleById = async (id: number): Promise<Article> => {
 export const submitArticle = async (
   data: { title: string; content: string },
   token: string
-): Promise<Article> => {
+): Promise<Phrase> => {
   const response = await fetch("/api/articles", {
     method: "POST",
     headers: {

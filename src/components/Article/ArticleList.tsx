@@ -1,8 +1,7 @@
 // ArticleList.tsx
 import React from "react";
 import { Article } from "../../types";
-import { Link } from "react-router-dom";
-
+import ArticleListItem from "./ArticleListItem";
 interface ArticleListProps {
   articles: Article[];
 }
@@ -16,12 +15,9 @@ const ArticleList: React.FC<ArticleListProps> = ({ articles }) => {
   return (
     <ul>
       {articles.map((article) => (
-        <li key={article.ID}>
-          <Link to={`/article/${article.ID}`}>{article.title}</Link>
-        </li>
+        <ArticleListItem key={article.ID} article={article} />
       ))}
     </ul>
   );
 };
-
 export default ArticleList;

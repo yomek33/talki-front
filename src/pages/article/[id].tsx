@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Article } from "../../types";
-import { fetchArticleById } from "../../services/api/article"; // Assuming you have a service to fetch a single article
+import { fetchArticleById } from "../../services/api/article";
+import PhraseList from "../../components/Phrase/PhraseList";
 
 const ArticlePage: React.FC = () => {
   const { id: idString } = useParams<{ id: string }>();
@@ -15,9 +16,9 @@ const ArticlePage: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        console.log("Fetching article with ID:", id); // Log the ID being fetched
+        console.log("Fetching article with ID:", id);
         const fetchedArticle = await fetchArticleById(id);
-        console.log("Fetched article:", fetchedArticle); // Log the fetched article
+        console.log("Fetched article:", fetchedArticle);
         setArticle(fetchedArticle);
       } catch (error) {
         console.error("Error fetching article:", error);
@@ -47,11 +48,7 @@ const ArticlePage: React.FC = () => {
       <h1>{article.title}</h1>
       <p>{article.content}</p>
       {article.Phrases && article.Phrases.length > 0 && (
-        <ul>
-          {article.Phrases.map((phrase, index) => (
-            <li key={index}>{phrase.Text}</li>
-          ))}
-        </ul>
+        <PhraseList phrases={article.Phrases} />
       )}
     </div>
   );

@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { AuthContext } from "../../services/AuthProvider";
-import { submitArticle } from "../../services/api/article"; // Adjust the path as needed
-import { Article } from "../../types"; // Adjust the path as needed
+import { submitArticle } from "../../services/api/article";
+import { Phrase, Article } from "../../types";
 
 interface ArticleFormInputs {
   title: string;
@@ -31,15 +31,19 @@ const SubmitArticleForm: React.FC = () => {
     }
 
     try {
-      const responseData: Article = await submitArticle(
+      const responseData: Phrase = await submitArticle(
         data,
         await authContext.user.getIdToken()
       );
       setSuccess("Article submitted successfully!");
 
-      // Extract the Text property from each phrase in the response
-      const texts = responseData.Phrases.map((phrase) => phrase.Text);
-      setResponseText(texts);
+      console.log("Response data:", responseData);
+      if (responseData) {
+        const texts = responseData.map((phrase: Phrase) => phrase.Text);
+        setResponseText(texts);
+      } else {
+        console.error("Unexpected response data:", responseData);
+      }
 
       reset();
     } catch (error) {
