@@ -21,3 +21,24 @@ export const fetchArticleById = async (id: number): Promise<Article> => {
   const data = await response.json();
   return data;
 };
+
+export const submitArticle = async (
+  data: { title: string; content: string },
+  token: string
+): Promise<Article> => {
+  const response = await fetch("/api/articles", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    console.error("Failed to submit article:", response);
+    throw new Error("Failed to submit article");
+  }
+
+  return response.json();
+};

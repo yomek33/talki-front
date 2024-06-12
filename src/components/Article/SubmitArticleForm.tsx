@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { AuthContext } from "../../services/AuthProvider";
+import { submitArticle } from "../../services/api/article"; // Adjust the path as needed
+import { Article } from "../../types"; // Adjust the path as needed
 
 interface ArticleFormInputs {
   title: string;
@@ -29,25 +31,14 @@ const SubmitArticleForm: React.FC = () => {
     }
 
     try {
-      const response = await fetch("/api/articles", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await authContext.user.getIdToken()}`,
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        console.error("Failed to submit article:", response);
-        throw new Error("Failed to submit article");
-      }
-
-      const responseData = await response.json();
+      const responseData: Article = await submitArticle(
+        data,
+        await authContext.user.getIdToken()
+      );
       setSuccess("Article submitted successfully!");
 
-      // Extract the Text property from each object in the response array
-      const texts = responseData.map((item: { Text: string }) => item.Text);
+      // Extract the Text property from each phrase in the response
+      const texts = responseData.Phrases.map((phrase) => phrase.Text);
       setResponseText(texts);
 
       reset();
