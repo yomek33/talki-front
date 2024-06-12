@@ -11,7 +11,7 @@ const ArticleListItem: React.FC<ArticleItemProps> = ({ article }) => {
   return (
     <div>
       <h2>
-        <Link to={`/article/${article.id}`}>{article.title}</Link>
+        <Link to={`/article/${article.ID}`}>{article.title}</Link>
       </h2>
       <p>{article.content}</p>
     </div>

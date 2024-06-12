@@ -5,7 +5,8 @@ import SignIn from "./components/Auth/Signin";
 import MainPage from "./pages/MainPage";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
-import ArticleListPage from "./pages/ArticleListPage";
+import ArticleListPage from "./pages/article/ArticleListPage";
+import ArticlePage from "./pages/article/[id]";
 
 function App() {
   return (
@@ -14,10 +15,14 @@ function App() {
         <Routes>
           <Route path="/about" element={<PublicRoute component={SignIn} />} />
           <Route
-            path="/list"
+            path="/"
             element={<PrivateRoute component={ArticleListPage} />}
           />
-          <Route path="/" element={<PrivateRoute component={MainPage} />} />
+          <Route
+            path="/article/:id"
+            element={<PrivateRoute component={ArticlePage} />}
+          />
+          <Route path="/send" element={<PrivateRoute component={MainPage} />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

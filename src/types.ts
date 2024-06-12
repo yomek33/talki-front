@@ -6,8 +6,16 @@ export interface User {
   photoURL: string | null;
 }
 
+export interface Phrase {
+  ID: number;
+  Text: string;
+  importance: string;
+}
+
 export interface Article {
-  id: string;
+  ID: number;
+  userUID: string;
   title: string;
   content: string;
+  Phrases: Phrase[];
 }

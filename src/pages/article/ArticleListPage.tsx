@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useAtom } from "jotai";
-import { articlesAtom, articlesLoadedAtom } from "../globalState/article";
-import { fetchArticles } from "../services/api/article";
-import ArticleList from "../components/Article/ArticleList";
+import { articlesAtom, articlesLoadedAtom } from "../../globalState/article";
+import { fetchArticles } from "../../services/api/article";
+import ArticleList from "../../components/Article/ArticleList";
 
 const ArticlesPage: React.FC = () => {
   const [articles, setArticles] = useAtom(articlesAtom);
