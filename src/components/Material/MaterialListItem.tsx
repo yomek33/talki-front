@@ -1,14 +1,14 @@
-// components/ArticleItem.tsx
+// components/MaterialItem.tsx
 import React from "react";
-import { Article } from "../../types";
+import { Material } from "../../types";
 import { Link } from "react-router-dom";
 import { Card, CardHeader, CardBody } from "@nextui-org/react";
 
-interface ArticleItemProps {
-  article: Article;
+interface MaterialItemProps {
+  material: Material;
 }
 
-const ArticleListItem: React.FC<ArticleItemProps> = ({ article }) => {
+const MaterialListItem: React.FC<MaterialItemProps> = ({ material }) => {
   const truncateContent = (content: string, wordLimit: number) => {
     const words = content.split(" ");
     if (words.length <= wordLimit) {
@@ -18,14 +18,14 @@ const ArticleListItem: React.FC<ArticleItemProps> = ({ article }) => {
   };
 
   return (
-    <Link to={`/article/${article.ID}`}>
+    <Link to={`/material/${material.ID}`}>
       <div className="mb-3">
         <Card>
           <CardBody>
-            <CardHeader>
-              <h2>{article.title}</h2>
+            <CardHeader className="py-1 px-5">
+              <h1 className="font-bold text-2xl">{material.title}</h1>
             </CardHeader>
-            <p>{truncateContent(article.content, 50)}</p>
+            <p className="px-3">{truncateContent(material.content, 50)}</p>
           </CardBody>
         </Card>
       </div>
@@ -33,4 +33,4 @@ const ArticleListItem: React.FC<ArticleItemProps> = ({ article }) => {
   );
 };
 
-export default ArticleListItem;
+export default MaterialListItem;

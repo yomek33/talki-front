@@ -1,11 +1,11 @@
 import React from "react";
-import SubmitArticleForm from "../components/Article/SubmitArticleForm";
+import SubmitMaterialForm from "../components/Material/SubmitMaterialForm";
 
 const MainPage: React.FC = () => {
   return (
     <div>
-      <h1>Article Submission App</h1>
-      <SubmitArticleForm />
+      <h1>Material Submission App</h1>
+      <SubmitMaterialForm />
     </div>
   );
 };

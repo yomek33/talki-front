@@ -12,7 +12,7 @@ export interface Phrase {
   importance: string;
 }
 
-export interface Article {
+export interface Material {
   ID: number;
   userUID: string;
   title: string;
