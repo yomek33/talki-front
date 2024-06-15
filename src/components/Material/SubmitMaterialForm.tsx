@@ -7,7 +7,7 @@ import {
   fetchProcessedPhrases,
 } from "../../services/api/material";
 import { Phrase } from "../../types";
-import { Progress, Input, Textarea } from "@nextui-org/react";
+import { Progress, Input, Textarea, Button } from "@nextui-org/react";
 
 interface MaterialFormInputs {
   title: string;
@@ -98,18 +98,11 @@ const SubmitMaterialForm: React.FC = () => {
       <h2>Submit an Material</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {success && <p style={{ color: "green" }}>{success}</p>}
-      {loading && (
-        <Progress
-          isIndeterminate
-          aria-label="Loading..."
-          className="max-w-md"
-          color="danger"
-        />
-      )}
+
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label>
-            Title:
+            <h2 className="font-bold text-xl pb-2 pl-2">Title</h2>
             <Input
               {...register("title", {
                 required: "Title is required.",
@@ -120,18 +113,18 @@ const SubmitMaterialForm: React.FC = () => {
               })}
               type="text"
               variant="bordered"
+              size="lg"
               isInvalid={isSubmitted && !!errors.title}
               color={isSubmitted && errors.title ? "danger" : "default"}
               errorMessage={
                 isSubmitted && errors.title ? errors.title.message : ""
               }
-              className="max-w-xs"
             />
           </label>
         </div>
-        <div>
+        <div className="py-5">
           <label>
-            Text:
+            <h2 className="font-bold text-xl pb-2 pl-2">Content</h2>
             <Textarea
               {...register("content", {
                 required: "Content is required.",
@@ -142,15 +135,28 @@ const SubmitMaterialForm: React.FC = () => {
               })}
               type="text"
               variant="bordered"
+              size="lg"
               isInvalid={isSubmitted && !!errors.content}
               color={isSubmitted && errors.content ? "danger" : "default"}
               errorMessage={
                 isSubmitted && errors.content ? errors.content.message : ""
               }
+              minRows={10}
+              maxRows={100}
             />
           </label>
         </div>
-        <button type="submit">Submit</button>
+        <Button
+          type="submit"
+          variant="ghost"
+          color="primary"
+          className=" font-bold py-2 px-4"
+        >
+          Submit
+        </Button>
+        {loading && (
+          <Progress isIndeterminate aria-label="Loading..." color="danger" />
+        )}
       </form>
       {responseText.length > 0 && (
         <div>
