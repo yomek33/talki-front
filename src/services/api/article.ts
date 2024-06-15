@@ -1,6 +1,6 @@
 // api.ts
 import { BACKEND_URI } from "../../config/config";
-import { Article, Phrase } from "../../types";
+import { Article } from "../../types";
 
 export const fetchArticles = async (): Promise<Article[]> => {
   const response = await fetch(`${BACKEND_URI}/api/articles`, {
@@ -25,7 +25,7 @@ export const fetchArticleById = async (id: number): Promise<Article> => {
 export const submitArticle = async (
   data: { title: string; content: string },
   token: string
-): Promise<Phrase> => {
+) => {
   const response = await fetch("/api/articles", {
     method: "POST",
     headers: {
@@ -40,5 +40,34 @@ export const submitArticle = async (
     throw new Error("Failed to submit article");
   }
 
+  return response.json();
+};
+
+export const checkArticleStatus = async (articleID: number) => {
+  if (articleID === undefined) {
+    throw new Error("articleID is undefined");
+  }
+  console.log("articleID", articleID);
+  const articleIDStr = articleID.toString();
+  const response = await fetch(`/api/articles/${articleIDStr}/status`, {
+    headers: {
+      Authorization: "Bearer your_token_here",
+    },
+  });
+  console.log("checkArticleStatus response", response);
+  return response.json();
+};
+
+export const fetchProcessedPhrases = async (articleID: number) => {
+  if (articleID === undefined) {
+    throw new Error("articleID is undefined");
+  }
+  const articleIDStr = articleID.toString();
+  const response = await fetch(`/api/articles/${articleIDStr}/phrases`, {
+    headers: {
+      Authorization: "Bearer your_token_here",
+    },
+  });
+  console.log("fetchProcessedPhrases response", response);
   return response.json();
 };

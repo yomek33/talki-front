@@ -19,7 +19,7 @@ const ArticleListItem: React.FC<ArticleItemProps> = ({ article }) => {
 
   return (
     <Link to={`/article/${article.ID}`}>
-      <div>
+      <div className="mb-3">
         <Card>
           <CardBody>
             <CardHeader>

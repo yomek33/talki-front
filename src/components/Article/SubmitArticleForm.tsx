@@ -1,9 +1,12 @@
 import React, { useContext, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { AuthContext } from "../../services/AuthProvider";
-import { submitArticle } from "../../services/api/article";
-import { Phrase, Article } from "../../types";
-
+import {
+  submitArticle,
+  checkArticleStatus,
+  fetchProcessedPhrases,
+} from "../../services/api/article";
+import { Phrase } from "../../types";
 interface ArticleFormInputs {
   title: string;
   content: string;
@@ -20,10 +23,12 @@ const SubmitArticleForm: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const [responseText, setResponseText] = useState<string[]>([]);
+  const [articleID, setArticleID] = useState<number>();
 
   const onSubmit: SubmitHandler<ArticleFormInputs> = async (data) => {
     setError("");
     setSuccess("");
+    setResponseText([]);
 
     if (!authContext?.user) {
       setError("You must be logged in to submit an article.");
@@ -31,24 +36,50 @@ const SubmitArticleForm: React.FC = () => {
     }
 
     try {
-      const responseData: Phrase = await submitArticle(
+      const response = await submitArticle(
         data,
         await authContext.user.getIdToken()
       );
-      setSuccess("Article submitted successfully!");
+      console.log("Submitted article:", response);
+      const id = response.id;
+      setArticleID(id);
+      setSuccess("Article submitted successfully! Processing...");
 
-      console.log("Response data:", responseData);
-      if (responseData) {
-        const texts = responseData.map((phrase: Phrase) => phrase.Text);
-        setResponseText(texts);
-      } else {
-        console.error("Unexpected response data:", responseData);
-      }
-
+      pollArticleStatus(id);
       reset();
     } catch (error) {
       console.error("Error submitting article:", error);
       setError("Error submitting article: " + (error as Error).message);
+    }
+  };
+
+  const pollArticleStatus = async (articleID: number) => {
+    const interval = setInterval(async () => {
+      try {
+        const response = await checkArticleStatus(articleID);
+        if (response.status === "completed") {
+          clearInterval(interval);
+          await fetchPhrases(articleID);
+        } else if (response.status === "failed") {
+          clearInterval(interval);
+          setError("Failed to process the article.");
+        }
+      } catch (error) {
+        clearInterval(interval);
+        setError("Error checking article status: " + (error as Error).message);
+      }
+    }, 5000);
+  };
+
+  const fetchPhrases = async (articleID: number) => {
+    try {
+      const responseData: Phrase[] = await fetchProcessedPhrases(articleID);
+      const texts = responseData.map((phrase: Phrase) => phrase.Text);
+      setResponseText(texts);
+      setSuccess("Article processed successfully!");
+    } catch (error) {
+      console.error("Error fetching processed phrases:", error);
+      setError("Error fetching processed phrases: " + (error as Error).message);
     }
   };
 
