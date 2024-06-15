@@ -30,12 +30,9 @@ const LogOut: FC = () => {
   };
 
   return (
-    <div className="flex items-center">
-      <p className="text-xl mb-4">Welcome, {user?.displayName}!</p>
-      <button onClick={handleLogOut} disabled={loading}>
-        {loading ? "Signing out..." : "Sign out"}
-      </button>
-    </div>
+    <button onClick={handleLogOut} disabled={loading}>
+      {loading ? "Signing out..." : "Sign out"}
+    </button>
   );
 };
 

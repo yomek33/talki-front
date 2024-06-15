@@ -19,13 +19,15 @@ const MaterialListItem: React.FC<MaterialItemProps> = ({ material }) => {
 
   return (
     <Link to={`/material/${material.ID}`}>
-      <div className="mb-3">
-        <Card>
+      <div className="mb-4">
+        <Card shadow="sm">
           <CardBody>
             <CardHeader className="py-1 px-5">
-              <h1 className="font-bold text-2xl">{material.title}</h1>
+              <h1 className="font-bold text-2xl text-rose-400">
+                {material.title}
+              </h1>
             </CardHeader>
-            <p className="px-3">{truncateContent(material.content, 50)}</p>
+            <p className="px-4">{truncateContent(material.content, 80)}</p>
           </CardBody>
         </Card>
       </div>

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Material } from "../../types";
 import { fetchMaterialById } from "../../services/api/material";
-import PhraseList from "../../components/Phrase/PhraseList";
-import { Input, Textarea } from "@nextui-org/react";
+import { Textarea } from "@nextui-org/react";
+import MaterialTabs from "../../components/MaterialTabs";
 
 const MaterialPage: React.FC = () => {
   const { id: idString } = useParams<{ id: string }>();
@@ -47,20 +47,9 @@ const MaterialPage: React.FC = () => {
   return (
     <div>
       <div>
-        <label>
-          <h2 className="font-bold text-xl  pb-2 pl-2">Title</h2>
-          <Input
-            fullWidth
-            size="lg"
-            type="text"
-            variant="bordered"
-            readOnly
-            value={material.title}
-            className="pointer-events-none bg-transparent border-black"
-          />
-        </label>
+        <h2 className="font-bold text-5xl  text-rose-400">{material.title}</h2>
       </div>
-      <div className="py-5">
+      <div className="py-2">
         <label>
           <h2 className="font-bold text-xl pb-2 pl-2">Content</h2>
           <Textarea
@@ -75,9 +64,7 @@ const MaterialPage: React.FC = () => {
           />
         </label>
       </div>
-      {material.Phrases && material.Phrases.length > 0 && (
-        <PhraseList phrases={material.Phrases} />
-      )}
+      <MaterialTabs responsePhraseText={material.Phrases} />
     </div>
   );
 };

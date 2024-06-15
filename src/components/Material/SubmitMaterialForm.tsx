@@ -7,8 +7,15 @@ import {
   fetchProcessedPhrases,
 } from "../../services/api/material";
 import { Phrase } from "../../types";
-import { Progress, Input, Textarea, Button } from "@nextui-org/react";
-
+import {
+  Progress,
+  Input,
+  Textarea,
+  Button,
+  Tabs,
+  Tab,
+} from "@nextui-org/react";
+import MaterialTabs from "../MaterialTabs";
 interface MaterialFormInputs {
   title: string;
   content: string;
@@ -24,14 +31,15 @@ const SubmitMaterialForm: React.FC = () => {
   } = useForm<MaterialFormInputs>();
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
-  const [responseText, setResponseText] = useState<string[]>([]);
+  const [responsePhraseText, setResponsePhraseText] = useState<Phrase[]>([]);
   const [materialID, setMaterialID] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
 
+  const variant = "underlined";
   const onSubmit: SubmitHandler<MaterialFormInputs> = async (data) => {
     setError("");
     setSuccess("");
-    setResponseText([]);
+    setResponsePhraseText([]);
     setLoading(true);
 
     if (!authContext?.user) {
@@ -51,7 +59,6 @@ const SubmitMaterialForm: React.FC = () => {
       setSuccess("Material submitted successfully! Processing...");
 
       pollMaterialStatus(id);
-      reset();
     } catch (error) {
       console.error("Error submitting material:", error);
       setError("Error submitting material: " + (error as Error).message);
@@ -81,9 +88,11 @@ const SubmitMaterialForm: React.FC = () => {
 
   const fetchPhrases = async (materialID: number) => {
     try {
-      const responseData: Phrase[] = await fetchProcessedPhrases(materialID);
-      const texts = responseData.map((phrase: Phrase) => phrase.Text);
-      setResponseText(texts);
+      const responsePhrasesData: Phrase[] = await fetchProcessedPhrases(
+        materialID
+      );
+
+      setResponsePhraseText(responsePhrasesData);
       setSuccess("Material processed successfully!");
     } catch (error) {
       console.error("Error fetching processed phrases:", error);
@@ -95,14 +104,15 @@ const SubmitMaterialForm: React.FC = () => {
 
   return (
     <div>
-      <h2>Submit an Material</h2>
+      <h1 className="font-bold text-4xl pb-5 text-emerald-300 ">
+        New Material
+      </h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label>
-            <h2 className="font-bold text-xl pb-2 pl-2">Title</h2>
+            <h2 className="font-bold text-2xl pb-2 pl-2">Title</h2>
             <Input
               {...register("title", {
                 required: "Title is required.",
@@ -124,7 +134,7 @@ const SubmitMaterialForm: React.FC = () => {
         </div>
         <div className="py-5">
           <label>
-            <h2 className="font-bold text-xl pb-2 pl-2">Content</h2>
+            <h2 className="font-bold text-2xl pb-2 pl-2">Content</h2>
             <Textarea
               {...register("content", {
                 required: "Content is required.",
@@ -146,28 +156,21 @@ const SubmitMaterialForm: React.FC = () => {
             />
           </label>
         </div>
-        <Button
-          type="submit"
-          variant="ghost"
-          color="primary"
-          className=" font-bold py-2 px-4"
-        >
-          Submit
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            type="submit"
+            variant="ghost"
+            size="lg"
+            className="font-semibold  py-3 px-5 text-lg border-2 text-blue-400 border-blue-400"
+          >
+            Submit
+          </Button>
+        </div>
         {loading && (
           <Progress isIndeterminate aria-label="Loading..." color="danger" />
         )}
       </form>
-      {responseText.length > 0 && (
-        <div>
-          <h3>Processed Content</h3>
-          <ul>
-            {responseText.map((item: string, index: number) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <MaterialTabs responsePhraseText={responsePhraseText} />
     </div>
   );
 };

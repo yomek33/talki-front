@@ -28,8 +28,6 @@ const PrivateRoute: FC<PrivateRouteProps> = ({ component: Component }) => {
   if (user && isVerifyUserByBackend) {
     return (
       <>
-        <h1>Private Route</h1>
-        <LogOut />
         <Component />
       </>
     );

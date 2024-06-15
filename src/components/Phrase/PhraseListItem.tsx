@@ -10,7 +10,7 @@ interface PhraseItemProps {
 const PhraseListItem: React.FC<PhraseItemProps> = ({ phrase }) => {
   return (
     <div className="mb-3">
-      <Card>
+      <Card shadow="sm">
         <CardBody>
           <p>{phrase.Text}</p>
         </CardBody>

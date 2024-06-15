@@ -1,6 +1,6 @@
 // api.ts
 import { BACKEND_URI } from "../../config/config";
-import { Material } from "../../types";
+import { Material, Phrase } from "../../types";
 
 export const fetchMaterials = async (): Promise<Material[]> => {
   const response = await fetch(`${BACKEND_URI}/api/materials`, {
@@ -69,5 +69,6 @@ export const fetchProcessedPhrases = async (materialID: number) => {
     },
   });
   console.log("fetchProcessedPhrases response", response);
-  return response.json();
+  const data = await response.json();
+  return data as Phrase[];
 };

@@ -7,6 +7,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import MaterialListPage from "./pages/material/MaterialListPage";
 import MaterialPage from "./pages/material/[id]";
+import LogOut from "./components/Auth/LogOut";
 
 function App() {
   return (
@@ -29,6 +30,9 @@ function App() {
                 <Link to="/send" className="text-blue-500">
                   Send
                 </Link>
+              </li>
+              <li>
+                <LogOut />
               </li>
             </ul>
           </nav>

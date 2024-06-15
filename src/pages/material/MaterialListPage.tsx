@@ -23,16 +23,17 @@ const MaterialsPage: React.FC = () => {
   }, [materialsLoaded, setMaterials, setMaterialsLoaded]);
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="font-bold text-2xl">Materials</h1>
-        <Button
-          color="primary"
-          variant="ghost"
-          onClick={() => navigate("/send")}
-          className=" font-bold py-2 px-4"
-        >
-          Create New Material
-        </Button>
+      <div className="flex justify-between items-center pb-5">
+        <h1 className="font-bold text-5xl text-emerald-300">Materials</h1>
+        <div>
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/send")}
+            className="py-3 px-5 text-lg  font-semibold border-2 text-blue-400 border-blue-400"
+          >
+            Create New Material
+          </Button>
+        </div>
       </div>
       <MaterialList materials={materials} />
     </>
