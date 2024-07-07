@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const LogOut: FC = () => {
   const authContext = useContext(AuthContext);
-  const [user, setUser] = useAtom(userAtom);
+  const [, setUser] = useAtom(userAtom);
   const [loading, setLoading] = useAtom(loadingAtom);
   const navigate = useNavigate();
 

@@ -1,7 +1,6 @@
 import React, { FC, useContext, ComponentType } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../services/AuthProvider";
-import LogOut from "./Auth/LogOut";
 import { useAtom } from "jotai";
 import {
   userAtom,

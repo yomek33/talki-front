@@ -1,5 +1,5 @@
 export interface User {
-  idToken: string;
+  idToken?: string;
   uid: string;
   displayName: string | null;
   email: string | null;
@@ -18,4 +18,20 @@ export interface Material {
   title: string;
   content: string;
   Phrases: Phrase[];
+}
+
+export interface Message {
+  ID: number;
+  content: string;
+  createdAt: string;
+  materialID: number;
+  chatID: number;
+  sender: string;
+}
+
+export interface Chat {
+  ID: number;
+  messages: Message[];
+  materialID: number;
+  detail: string;
 }

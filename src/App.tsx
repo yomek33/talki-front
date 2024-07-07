@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import AuthProvider from "./services/AuthProvider";
 import SignIn from "./components/Auth/Signin";
-import MainPage from "./pages/MainPage";
+import SubmitPage from "./pages/SubmitPage";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import MaterialListPage from "./pages/material/MaterialListPage";
@@ -48,7 +48,7 @@ function App() {
             />
             <Route
               path="/send"
-              element={<PrivateRoute component={MainPage} />}
+              element={<PrivateRoute component={SubmitPage} />}
             />
           </Routes>
         </div>
