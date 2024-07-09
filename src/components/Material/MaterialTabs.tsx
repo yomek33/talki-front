@@ -1,15 +1,16 @@
 import React from "react";
 import { Tabs, Tab } from "@nextui-org/react";
-import PhraseList from "./Phrase/PhraseList";
-import { Phrase } from "../types";
+import PhraseList from "../Phrase/PhraseList";
+import { Material } from "../../types";
+import Chat from "../Chat/Chat";
 
 interface MaterialTabsProps {
-  responsePhraseText: Phrase[];
+  material: Material;
 }
 
-const MaterialTabs: React.FC<MaterialTabsProps> = ({ responsePhraseText }) => {
+const MaterialTabs: React.FC<MaterialTabsProps> = ({ material }) => {
   const variant = "underlined";
-
+  const responsePhraseText = material.Phrases;
   return (
     <div className="flex w-full flex-col">
       <Tabs key={variant} variant={variant} aria-label="Tabs variants">
@@ -21,9 +22,7 @@ const MaterialTabs: React.FC<MaterialTabsProps> = ({ responsePhraseText }) => {
           )}
         </Tab>
         <Tab key="Chats" title="Chats">
-          <div>
-            <h1>ss</h1>
-          </div>
+          <Chat materialId={material.ID} chats={material.Chat} />
         </Tab>
       </Tabs>
     </div>

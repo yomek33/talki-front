@@ -18,6 +18,7 @@ export interface Material {
   title: string;
   content: string;
   Phrases: Phrase[];
+  Chat: Chat[];
 }
 
 export interface Message {
@@ -31,7 +32,7 @@ export interface Message {
 
 export interface Chat {
   ID: number;
-  messages: Message[];
+  Messages: Message[];
   materialID: number;
   detail: string;
 }

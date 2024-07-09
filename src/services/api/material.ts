@@ -22,16 +22,16 @@ export const fetchMaterialById = async (id: number): Promise<Material> => {
   return data;
 };
 
-export const submitMaterial = async (
-  data: { title: string; content: string },
-  token: string
-) => {
+export const submitMaterial = async (data: {
+  title: string;
+  content: string;
+}) => {
   const response = await fetch("/api/materials", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
     },
+    credentials: "include",
     body: JSON.stringify(data),
   });
 
@@ -47,12 +47,14 @@ export const checkMaterialStatus = async (materialID: number) => {
   if (materialID === undefined) {
     throw new Error("materialID is undefined");
   }
+
   console.log("materialID", materialID);
   const materialIDStr = materialID.toString();
   const response = await fetch(`/api/materials/${materialIDStr}/status`, {
     headers: {
-      Authorization: "Bearer your_token_here",
+      "Content-Type": "application/json",
     },
+    credentials: "include",
   });
   console.log("checkMaterialStatus response", response);
   return response.json();
@@ -65,8 +67,9 @@ export const fetchProcessedPhrases = async (materialID: number) => {
   const materialIDStr = materialID.toString();
   const response = await fetch(`/api/materials/${materialIDStr}/phrases`, {
     headers: {
-      Authorization: "Bearer your_token_here",
+      "Content-Type": "application/json",
     },
+    credentials: "include",
   });
   console.log("fetchProcessedPhrases response", response);
   const data = await response.json();

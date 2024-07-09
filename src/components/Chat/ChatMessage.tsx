@@ -1,23 +1,24 @@
 import React from "react";
-import { useAtom } from "jotai";
-import { chatsAtom } from "../../globalState/chat";
-import { Message } from "../../types";
+import { Message, Chat } from "../../types";
 
 interface ChatMessageProps {
-  chatID: number;
+  chat: Chat;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ chatID }) => {
-  const [chats] = useAtom(chatsAtom);
-  const chat = chats.find((chat) => chat.ID === chatID);
-
+const ChatMessage: React.FC<ChatMessageProps> = ({ chat }) => {
   if (!chat) {
     return <div>Chat not found</div>;
   }
 
+  if (!chat.Messages || !Array.isArray(chat.Messages)) {
+    return <div>No Messages available</div>;
+  }
+
+  console.log("Created chat:", chat);
+
   return (
     <>
-      {chat.messages.map((message: Message) => (
+      {chat.Messages.map((message: Message) => (
         <div
           key={message.ID}
           className={`flex items-end ${

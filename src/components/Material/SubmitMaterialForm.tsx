@@ -1,103 +1,48 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { AuthContext } from "../../services/AuthProvider";
-import {
-  submitMaterial,
-  checkMaterialStatus,
-  fetchProcessedPhrases,
-} from "../../services/api/material";
-import { Phrase } from "../../types";
-import {
-  Progress,
-  Input,
-  Textarea,
-  Button,
-  Tabs,
-  Tab,
-} from "@nextui-org/react";
-import MaterialTabs from "../MaterialTabs";
+import { submitMaterial } from "../../services/api/material";
+import { Material } from "../../types";
+import { Input, Textarea, Button } from "@nextui-org/react";
+import { useNavigate } from "react-router-dom";
+import { useAtom } from "jotai";
+import { userAtom } from "../../globalState/user";
+
 interface MaterialFormInputs {
   title: string;
   content: string;
 }
 
-const SubmitMaterialForm: React.FC = () => {
-  const authContext = useContext(AuthContext);
+interface SubmitMaterialFormProps {
+  onMaterialSubmit: (material: Material) => void;
+}
+
+const SubmitMaterialForm: React.FC<SubmitMaterialFormProps> = () => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitted },
   } = useForm<MaterialFormInputs>();
   const [error, setError] = useState<string>("");
-  const [success, setSuccess] = useState<string>("");
-  const [responsePhraseText, setResponsePhraseText] = useState<Phrase[]>([]);
-  const [materialID, setMaterialID] = useState<number>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [, setSuccess] = useState<string>("");
+  const [, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const [user] = useAtom(userAtom);
+  // const token = user?.idToken;
 
-  const variant = "underlined";
   const onSubmit: SubmitHandler<MaterialFormInputs> = async (data) => {
     setError("");
     setSuccess("");
-    setResponsePhraseText([]);
     setLoading(true);
 
-    if (!authContext?.user) {
-      setError("You must be logged in to submit an material.");
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await submitMaterial(
-        data,
-        await authContext.user.getIdToken()
-      );
+      const response = await submitMaterial(data);
       console.log("Submitted material:", response);
       const id = response.id;
-      setMaterialID(id);
       setSuccess("Material submitted successfully! Processing...");
-
-      pollMaterialStatus(id);
+      navigate(`/material/${id}`);
     } catch (error) {
       console.error("Error submitting material:", error);
       setError("Error submitting material: " + (error as Error).message);
-      setLoading(false);
-    }
-  };
-
-  const pollMaterialStatus = async (materialID: number) => {
-    const interval = setInterval(async () => {
-      try {
-        const response = await checkMaterialStatus(materialID);
-        if (response.status === "completed") {
-          clearInterval(interval);
-          await fetchPhrases(materialID);
-        } else if (response.status === "failed") {
-          clearInterval(interval);
-          setError("Failed to process the material.");
-          setLoading(false);
-        }
-      } catch (error) {
-        clearInterval(interval);
-        setError("Error checking material status: " + (error as Error).message);
-        setLoading(false);
-      }
-    }, 5000);
-  };
-
-  const fetchPhrases = async (materialID: number) => {
-    try {
-      const responsePhrasesData: Phrase[] = await fetchProcessedPhrases(
-        materialID
-      );
-
-      setResponsePhraseText(responsePhrasesData);
-      setSuccess("Material processed successfully!");
-    } catch (error) {
-      console.error("Error fetching processed phrases:", error);
-      setError("Error fetching processed phrases: " + (error as Error).message);
-    } finally {
       setLoading(false);
     }
   };
@@ -166,11 +111,7 @@ const SubmitMaterialForm: React.FC = () => {
             Submit
           </Button>
         </div>
-        {loading && (
-          <Progress isIndeterminate aria-label="Loading..." color="danger" />
-        )}
       </form>
-      <MaterialTabs responsePhraseText={responsePhraseText} />
     </div>
   );
 };

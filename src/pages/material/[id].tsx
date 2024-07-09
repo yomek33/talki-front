@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Material } from "../../types";
-import { fetchMaterialById } from "../../services/api/material";
+import { Material, Phrase } from "../../types";
+import {
+  fetchMaterialById,
+  checkMaterialStatus,
+  fetchProcessedPhrases,
+} from "../../services/api/material";
 import { Textarea } from "@nextui-org/react";
-import MaterialTabs from "../../components/MaterialTabs";
+import MaterialTabs from "../../components/Material/MaterialTabs";
+import { Progress } from "@nextui-org/react";
 
 const MaterialPage: React.FC = () => {
   const { id: idString } = useParams<{ id: string }>();
@@ -21,10 +26,14 @@ const MaterialPage: React.FC = () => {
         const fetchedMaterial = await fetchMaterialById(id);
         console.log("Fetched material:", fetchedMaterial);
         setMaterial(fetchedMaterial);
+        if (!fetchedMaterial.Phrases || fetchedMaterial.Phrases.length === 0) {
+          pollMaterialStatus(id, fetchedMaterial);
+        } else {
+          setLoading(false);
+        }
       } catch (error) {
         console.error("Error fetching material:", error);
         setError("Error fetching material");
-      } finally {
         setLoading(false);
       }
     };
@@ -32,7 +41,48 @@ const MaterialPage: React.FC = () => {
     getMaterial();
   }, [id]);
 
-  if (loading) {
+  const pollMaterialStatus = async (
+    materialID: number,
+    submittedMaterial: Material
+  ) => {
+    const interval = setInterval(async () => {
+      try {
+        const response = await checkMaterialStatus(materialID);
+        if (response.status === "completed") {
+          clearInterval(interval);
+          await fetchPhrases(materialID, submittedMaterial);
+        } else if (response.status === "failed") {
+          clearInterval(interval);
+          setError("Failed to process the material.");
+          setLoading(false);
+        }
+      } catch (error) {
+        clearInterval(interval);
+        setError("Error checking material status: " + (error as Error).message);
+        setLoading(false);
+      }
+    }, 5000);
+  };
+
+  const fetchPhrases = async (
+    materialID: number,
+    submittedMaterial: Material
+  ) => {
+    try {
+      const responsePhrasesData: Phrase[] = await fetchProcessedPhrases(
+        materialID
+      );
+      submittedMaterial.Phrases = responsePhrasesData;
+      setMaterial(submittedMaterial);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching processed phrases:", error);
+      setError("Error fetching processed phrases: " + (error as Error).message);
+      setLoading(false);
+    }
+  };
+
+  if (loading && !material) {
     return <div>Loading...</div>;
   }
 
@@ -47,7 +97,7 @@ const MaterialPage: React.FC = () => {
   return (
     <div>
       <div>
-        <h2 className="font-bold text-5xl  text-rose-400">{material.title}</h2>
+        <h2 className="font-bold text-5xl text-rose-400">{material.title}</h2>
       </div>
       <div className="py-2">
         <label>
@@ -64,7 +114,10 @@ const MaterialPage: React.FC = () => {
           />
         </label>
       </div>
-      <MaterialTabs responsePhraseText={material.Phrases} />
+      {loading && (
+        <Progress isIndeterminate aria-label="Loading..." color="danger" />
+      )}
+      <MaterialTabs material={material} />
     </div>
   );
 };

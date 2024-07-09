@@ -19,7 +19,6 @@ const PublicRoute: FC<PublicRouteProps> = ({
     <Navigate replace to={path} />
   ) : (
     <>
-      <h1>Public Route</h1>
       <Component />
     </>
   );

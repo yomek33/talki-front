@@ -2,7 +2,7 @@ import { User } from "../../types";
 
 const backendUri = import.meta.env.VITE_BACKEND_URI;
 
-export const sendUserDataToBackend = async (user: User) => {
+export const sendUserDataToBackend = async (user: User): Promise<boolean> => {
   try {
     const response = await fetch(`${backendUri}/api/auth`, {
       method: "POST",
@@ -19,8 +19,16 @@ export const sendUserDataToBackend = async (user: User) => {
 
     console.log("id_token:", user.idToken);
     if (!response.ok) {
-      console.error("Failed to send user data to backend:", response);
-      throw new Error("Failed to send user data to backend");
+      const errorText = await response.text();
+      console.error(
+        "Failed to send user data to backend:",
+        response.status,
+        response.statusText,
+        errorText
+      );
+      throw new Error(
+        `Failed to send user data to backend: ${response.status} ${response.statusText}`
+      );
     }
     return true;
   } catch (error) {

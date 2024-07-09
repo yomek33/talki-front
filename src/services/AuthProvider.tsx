@@ -15,15 +15,18 @@ import PropTypes from "prop-types";
 import FirebaseConfig from "./api/FirebaseConfig";
 import { useAtom } from "jotai";
 import {
+  firebaseUserAtom,
   userAtom,
   loadingAtom,
   verifyUserByBackendAtom,
 } from "../../src/globalState/user";
+import { sendUserDataToBackend } from "./api/auth";
+import { User } from "../types";
 
 const { auth, signInWithGoogle } = FirebaseConfig;
 
 interface AuthContextProps {
-  user: FirebaseUser | null;
+  firebaseUser: FirebaseUser | null;
   idToken: string | null;
   logOut: () => Promise<void>;
   loading: boolean;
@@ -42,17 +45,17 @@ interface AuthProviderProps {
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useAtom(userAtom);
+  const [firebaseUser, setFirebaseUser] = useAtom(firebaseUserAtom);
+  const [, setUser] = useAtom(userAtom);
   const [loading, setLoading] = useAtom(loadingAtom);
-  const [verifyUserByBackend, setVerifyUserByBackend] = useAtom(
-    verifyUserByBackendAtom
-  );
+  const [, setVerifyUserByBackend] = useAtom(verifyUserByBackendAtom);
   const [idToken, setIdToken] = useState<string | null>(null);
 
   const logOut = async () => {
     setLoading(true);
     try {
       await signOut(auth);
+      setFirebaseUser(null);
       setUser(null);
       setIdToken(null);
       setVerifyUserByBackend(false);
@@ -68,10 +71,26 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const unsubscribe = onAuthStateChanged(
       auth,
       async (currentUser) => {
-        setUser(currentUser);
+        setFirebaseUser(currentUser);
         if (currentUser) {
           const token = await getIdToken(currentUser);
           setIdToken(token);
+          // Verify user by backend here and update userAtom
+          try {
+            const backendUser: User = {
+              uid: currentUser.uid,
+              displayName: currentUser.displayName || "",
+              email: currentUser.email || "",
+              idToken: token,
+              photoURL: currentUser.photoURL || "",
+            };
+            await sendUserDataToBackend(backendUser);
+            setUser(backendUser);
+            setVerifyUserByBackend(true);
+          } catch (error) {
+            console.error("User verification with backend failed:", error);
+            setVerifyUserByBackend(false);
+          }
         }
         setLoading(false);
       },
@@ -84,10 +103,10 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => {
       unsubscribe();
     };
-  }, [setUser, setLoading]);
+  }, [setFirebaseUser, setUser, setLoading, setVerifyUserByBackend]);
 
   const authValue: AuthContextProps = {
-    user,
+    firebaseUser,
     idToken,
     logOut,
     loading,
