@@ -27,7 +27,7 @@ export interface Message {
   createdAt: string;
   materialID: number;
   chatID: number;
-  sender: string;
+  sender_type: string;
 }
 
 export interface Chat {

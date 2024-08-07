@@ -1,33 +1,17 @@
 import React, { useState } from "react";
-import { useAtom } from "jotai";
-import { addMessageToChatAtom } from "../../globalState/chat";
-import { Message } from "../../types";
+
 interface ChatFormProps {
   chatID: number;
+  onSendMessage: (content: string) => void;
 }
 
-const ChatForm: React.FC<ChatFormProps> = ({ chatID }) => {
+const ChatForm: React.FC<ChatFormProps> = ({ chatID, onSendMessage }) => {
   const [input, setInput] = useState<string>("");
-  const [, addMessageToChat] = useAtom(addMessageToChatAtom);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const messagePayload: Omit<Message, "ID" | "createdAt"> = {
-      content: input,
-      materialID: 0,
-      chatID,
-      sender: "User",
-    };
-
-    try {
-      await addMessageToChat({
-        chatID,
-        message: messagePayload,
-      });
-      setInput("");
-    } catch (error) {
-      console.error("Failed to send message", error);
-    }
+    onSendMessage(input);
+    setInput("");
   };
 
   return (
